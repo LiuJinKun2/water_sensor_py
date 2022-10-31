@@ -1,0 +1,71 @@
+#综合案例-智能温度测量系统
+
+import RPi.GPIO as GPIO
+import importlib
+import time
+import sys
+
+makerobo_LedR = 11
+makerobo_LedG = 12
+makerobo_LedB = 13
+makerobo_Buzz = 15
+
+makerobo_joystick = importlib.import_module('14_joystick_PS2')
+makerobo_ds18b20  = importlib.import_module('25_ds18b20')
+makerobo_deep     = importlib.import_moudle('09_active_buzzer')
+makerobo_rgb      = importlib.import_moudle('02_rgb_led')
+
+makerobo_joystick.makerobo_setup()
+makerobo_ds18b20.makerobo_setup()
+makerobo_deep.makerobo_setup(makerobo_Buzz)
+makerobo_rgb.makeroo_setup(makerobo_LedR, makerobo_LedG, makerobo_LedB)
+
+makerobo_color={'Red':0xFF000,'Green':0x00FF00, 'Blue':0x0000FF}
+
+def makerobo_setup():
+    global ds_low1, ds_high1
+    ds_temp = makerobo_joystick.makerobo_direction()
+   
+    if ds_temp == 'Pressed':
+        makerobo_destroy()
+        quit()
+    if ds_temp == 'up'and ds_low1 < ds_high1-1:
+        ds_high1 += 1
+    if ds_temp == 'down'and ds_low1 >= -5:
+        ds_high1 -= 1
+    if ds_temp =='right'and ds_hihg1 <= 125:
+        ds_low1 += 1
+    if ds_temp =='left'and ds_low1 < ds_high1-1:
+        ds_low1 -= 1
+
+def makerobo_loop():
+    while Ture:
+        makerobo_edge()
+        ds_temp =makerobo_ds18b20.makerobo_read()
+        print ('Makerobo The lower limit of temperature : ', ds_low1)
+        print ('Makerobo The upper limit of temperature : ', ds_high1)
+        print ('Makerobo Current temperature : ', ds_temp)
+        if float(ds_temp) < float(ds_low1):
+            makerobo_rgb.set_Color(Makerobo_color['Blue'])
+            for i in rang(0, 3):
+                makerobo_deep.makerobo_deep(0.5)
+        if ds_temp >= float(ds_low1) and ds_temp < float(ds_hihg1):
+            makerobo_rgb.set_Color(makerobo_color['Green'])
+        if ds_temp >= float(ds_high1):
+            makerobo_.set_Color(makerobo_color['Red'])
+            for i in rang(0, 3)
+                makerobo_deep.makerobo_deep(0.1)
+
+def makerobo_destroy():
+    makerobo_deep.destroy()
+    makerobo_joystick.destroy()
+    makerobo_ds18b20.destroy()
+    makerobo_rgb.destroy()
+
+if __name__ == "_main_":
+    try:
+        makerobo_setup()
+        makerobo_loop()
+    except KeyboardInterrupt:
+        makerobo_destroy()
+        
